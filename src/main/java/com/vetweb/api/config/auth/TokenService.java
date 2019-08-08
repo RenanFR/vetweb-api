@@ -42,8 +42,8 @@ public class TokenService {
 		response.addHeader(HEADER_STRING, jsonWebToken);
 	}
 	
-	public static String createToken(String userName) {
-		User user = userService.findByName(userName);
+	public static String createToken(String userEmail) {
+		User user = userService.findByEmail(userEmail);
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("userEmail", user.getEmail());
 		claims.put("socialUser", user.isSocialLogin());

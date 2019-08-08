@@ -63,7 +63,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 			}
 			
 		}		
-		TokenService.addTokenToResponse(response, authResult.getName());
+		TokenService.addTokenToResponse(response, user.getEmail());
 	}
 	
 	private boolean isValidNumber(String code) {
