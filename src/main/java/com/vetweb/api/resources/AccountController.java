@@ -28,8 +28,6 @@ import com.vetweb.api.model.auth.User;
 import com.vetweb.api.service.auth.UserService;
 
 /**
- * This controller handles requests related to authentication, authorization and user registration for this API
- *
  * @author Renan Rodrigues
  */
 @RestController
@@ -47,12 +45,6 @@ public class AccountController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
 	
-	/**
-	 * Creates a new user account based on provided DTO 
-	 * @param User account DTO with basic sign up information like user name, password, e-mail, etc.
-	 * @return A QR code if two factor authentication is enabled or a simple success message
-	 * @throws Should handle when user already exists or required parameters like e-mail are missing
-	 */
 	@PostMapping("signup")
 	public ResponseEntity<String> createAccount(@RequestBody NewUserDTO account) {
 		LOGGER.info("Creating user " + account);
@@ -61,11 +53,6 @@ public class AccountController {
 		return ResponseEntity.ok(qrCodeOrMessage);
 	}
 	
-	/**
-	 * Handles authentication process
-	 * @param User name and password passed via request body
-	 * @return Application token for user session
-	 */
 
 	@PostMapping
 	public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
@@ -82,22 +69,12 @@ public class AccountController {
 		}
 	}	
 
-	/**
-	 * Checks if user with provided e-mail exists, used as async validation on user form to display messages  
-	 * @param User e-mail to check against the database
-	 * @return Boolean value corresponding to whether user exists or not
-	 */
 	@GetMapping("exists/{user}")
 	public boolean userExists(@PathVariable("user") String user) {
 		boolean doesUserExists = userService.userExists(user);
 		return doesUserExists;
 	}
 
-	/**
-	 * Check if provided user has enabled two factor authentication, used as async validation to show or hide TFA code control
-	 * @param User e-mail to check against the database
-	 * @return Boolean value corresponding to whether user enabled TFA or not
-	 */
 	@GetMapping("uses-tfa/{user}")
 	public ResponseEntity<Boolean> checkTFAIsEnabledForUser(@PathVariable("user") String user) {
 		User account = userService.findByEmail(user);
@@ -105,11 +82,6 @@ public class AccountController {
 		return ResponseEntity.ok(using2fa);
 	}
 	
-	/**
-	 * Build a map with user name and provided application session token (JWT) to be used as login return to front end
-	 * @param User name authenticated and generated JWT
-	 * @return Map with both information to serve as request return to front end
-	 */
 	private Map<String, String> buildUserInformationMap(String user, String appToken) {
 		Map<String, String> userInformationMap = new HashMap<String, String>();
 		userInformationMap.put("username", user);
