@@ -39,7 +39,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>		
+		</dependency>
+
+<!-- 		<dependency> -->
+<!-- 		    <groupId>org.springframework.boot</groupId> -->
+<!-- 		    <artifactId>spring-boot-starter-data-rest</artifactId> -->
+<!-- 		</dependency> -->
 		
 		<dependency>
 			<groupId>org.liquibase</groupId>
@@ -67,7 +72,18 @@
 	        <groupId>io.jsonwebtoken</groupId>
 	        <artifactId>jjwt</artifactId>
 	        <version>0.8.0</version>
-	    </dependency>					    		
+	    </dependency>
+	    
+		<dependency>
+		    <groupId>com.wildbit.java</groupId>
+		    <artifactId>postmark</artifactId>
+		    <version>1.2.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+		</dependency>		
 		
 	</dependencies>
 

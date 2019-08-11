@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.vetweb.api.model.auth.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>{
+public interface UserRepository extends JpaRepository<User, Long> {
 	
 	public Optional<User> findByName(String name);
 	

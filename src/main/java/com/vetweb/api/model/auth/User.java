@@ -19,6 +19,9 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 //Model for user information
 @Entity
 @Table(name = "tbl_user")
@@ -34,6 +37,7 @@ public class User implements UserDetails {
 	
 	private String email;
 	
+	@JsonIgnore
 	private String password;
 	
 	@Column(name = "using_2fa")
@@ -47,6 +51,7 @@ public class User implements UserDetails {
 	private LocalDate inclusionDate;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
+	@JsonManagedReference
 	@JoinTable(name = "tbl_user_profile",
 				joinColumns = @JoinColumn(
           			name = "user_id", referencedColumnName = "id"), 

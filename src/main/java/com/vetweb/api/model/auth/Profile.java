@@ -9,6 +9,8 @@ import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "tbl_profile")
 public class Profile implements GrantedAuthority{
@@ -19,6 +21,7 @@ public class Profile implements GrantedAuthority{
 	private String role;
 	
 	@ManyToMany(mappedBy = "profiles")
+	@JsonBackReference
 	private List<User> users;
 
 	public String getRole() {

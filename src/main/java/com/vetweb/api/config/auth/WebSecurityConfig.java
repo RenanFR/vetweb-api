@@ -44,7 +44,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter	{
 				.antMatchers(HttpMethod.POST, "/account").permitAll()
 				.antMatchers(HttpMethod.GET, "/categories/test").permitAll()
 				.antMatchers(HttpMethod.GET, "/account/exists/{user}").permitAll()
-				.antMatchers(HttpMethod.GET, "/account//uses-tfa/{user}").permitAll()
+				.antMatchers(HttpMethod.GET, "/account/uses-tfa/{user}").permitAll()
+				.antMatchers(HttpMethod.GET, "/account/has-valid-hash/{user}").permitAll()
+				.antMatchers(HttpMethod.GET, "/account/using-hash/{user}").permitAll()
+				.antMatchers(HttpMethod.POST, "/account/forget").permitAll()
+				.antMatchers(HttpMethod.PUT, "/account/update").permitAll()
 				.antMatchers(HttpMethod.POST, "/account/google").permitAll()
 				.anyRequest()
 				.authenticated()
@@ -57,7 +61,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter	{
 	public void configure(WebSecurity web) throws Exception {
 		web
 			.ignoring()
-//			.antMatchers(HttpMethod.POST, "/account/signin")
 			.antMatchers(HttpMethod.POST, "/account/signup");
 	}
 	

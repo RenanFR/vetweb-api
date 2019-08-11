@@ -2,6 +2,7 @@ package com.vetweb.api.resources;
 
 import static org.springframework.http.ResponseEntity.ok;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,13 +19,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vetweb.api.config.auth.TokenService;
 import com.vetweb.api.model.auth.NewUserDTO;
+import com.vetweb.api.model.auth.PasswordRecovery;
 import com.vetweb.api.model.auth.User;
+import com.vetweb.api.service.PostmarkMailSender;
+import com.vetweb.api.service.auth.PasswordRecoveryService;
 import com.vetweb.api.service.auth.UserService;
 
 /**
@@ -40,6 +45,12 @@ public class AccountController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private PostmarkMailSender postmarkMailSender;
+	
+	@Autowired
+	private PasswordRecoveryService recoveryService;
+	
 	@Value("${id.client.oauth}")
 	private String idClientOauth;	
 	
@@ -51,6 +62,27 @@ public class AccountController {
 		User user = new User(account.getUserName(), account.getUserMail(), account.getPassword(), account.isUseTwoFactorAuth(), account.isSocialLogin());
 		String qrCodeOrMessage = userService.signUp(user);
 		return ResponseEntity.ok(qrCodeOrMessage);
+	}
+	
+	@PutMapping("update")
+	public ResponseEntity<String> updateUser(@RequestBody NewUserDTO account) {
+		User user = userService.findByEmail(account.getUserMail());
+		user.setPassword(account.getPassword());
+		this.userService.saveUser(user);
+		this.recoveryService.cleanAfterConfirm(user.getId());
+		return ResponseEntity.accepted().body("The new password was set for user successfully");
+	}
+	
+	@GetMapping("using-hash/{user}")
+	public ResponseEntity<User> findUserByRecoveryHash(@PathVariable("user") String recoveryHash) {
+		PasswordRecovery passwordRecovery = recoveryService.findByHash(recoveryHash);
+		if (passwordRecovery != null) {
+			boolean expired = passwordRecovery.getExpirationDate().isBefore(LocalDate.now());
+			if (!expired) {
+				return ResponseEntity.ok(passwordRecovery.getUser());
+			}
+		}
+		return ResponseEntity.noContent().build();
 	}
 	
 
@@ -80,6 +112,20 @@ public class AccountController {
 		User account = userService.findByEmail(user);
 		boolean using2fa = account != null? account.isUsing2FA() : false;
 		return ResponseEntity.ok(using2fa);
+	}
+	
+	@PostMapping("forget")
+	public ResponseEntity<String> sendForgetPasswordEmail(@RequestBody String userEmail) {
+		User user = userService.findByEmail(userEmail);
+		postmarkMailSender.sendForgotPasswordEmail(user);
+		return ResponseEntity.ok("The request to reset the password was successfully sent to your email, check your mailbox in a couple of seconds and follow the steps provided");
+	}
+	
+	@GetMapping("has-valid-hash/{user}")
+	public ResponseEntity<Boolean> checkIfUserHasAlreadyRequestedANewPassword(@PathVariable("user") String userEmail) {
+		User user = userService.findByEmail(userEmail);
+		boolean hasValidHash = user != null? !recoveryService.findByUser(user.getId()).isEmpty() : false;
+		return ResponseEntity.ok(hasValidHash);
 	}
 	
 	private Map<String, String> buildUserInformationMap(String user, String appToken) {
