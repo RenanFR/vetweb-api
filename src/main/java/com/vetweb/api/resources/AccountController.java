@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -32,11 +33,15 @@ import com.vetweb.api.service.PostmarkMailSender;
 import com.vetweb.api.service.auth.PasswordRecoveryService;
 import com.vetweb.api.service.auth.UserService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 /**
  * @author Renan Rodrigues
  */
 @RestController
 @RequestMapping("account")
+@Api(value = "Handles authentication and authorization requests and provide useful user information")
 public class AccountController {
 	
 	@Autowired
@@ -86,7 +91,10 @@ public class AccountController {
 	}
 	
 
-	@PostMapping
+	@ApiOperation(
+			value = "Sign in with existent user",
+			notes = "Authenticate user with provided credentials checking if he exists and has enabled access")
+	@PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
 		try {
 			String email = user.getEmail();
