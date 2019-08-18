@@ -35,6 +35,8 @@ import com.vetweb.api.service.auth.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * @author Renan Rodrigues
@@ -61,14 +63,27 @@ public class AccountController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
 	
+	@ApiOperation(
+			value = "Sign up new user",
+			notes = "Creates a new user to use VetWeb using provided DTO")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Success message or QR code to scan as a secret to two factor authentication"),
+		@ApiResponse(code = 400, message = "Error message if user name, email or password is not present in the request")
+	})
 	@PostMapping("signup")
 	public ResponseEntity<String> createAccount(@RequestBody NewUserDTO account) {
 		LOGGER.info("Creating user " + account);
+		if ((account.getUserName() == null || account.getUserName().isEmpty()) || (account.getUserMail() == null || account.getUserMail().isEmpty()) || (account.getPassword() == null || account.getPassword().isEmpty())) {
+			return ResponseEntity.badRequest().body("Missing required information");
+		}
 		User user = new User(account.getUserName(), account.getUserMail(), account.getPassword(), account.isUseTwoFactorAuth(), account.isSocialLogin());
 		String qrCodeOrMessage = userService.signUp(user);
 		return ResponseEntity.ok(qrCodeOrMessage);
 	}
 	
+	@ApiOperation(
+			value = "Update existent user",
+			notes = "Update user information using provided DTO")
 	@PutMapping("update")
 	public ResponseEntity<String> updateUser(@RequestBody NewUserDTO account) {
 		User user = userService.findByEmail(account.getUserMail());
@@ -78,6 +93,9 @@ public class AccountController {
 		return ResponseEntity.accepted().body("The new password was set for user successfully");
 	}
 	
+	@ApiOperation(
+			value = "Find user by recovery hash",
+			notes = "Find the user using a specific password recovery hash")
 	@GetMapping("using-hash/{user}")
 	public ResponseEntity<User> findUserByRecoveryHash(@PathVariable("user") String recoveryHash) {
 		PasswordRecovery passwordRecovery = recoveryService.findByHash(recoveryHash);
@@ -109,12 +127,18 @@ public class AccountController {
 		}
 	}	
 
+	@ApiOperation(
+			value = "Does this user exists?",
+			notes = "Checks if user with provided email exists in the database")
 	@GetMapping("exists/{user}")
 	public boolean userExists(@PathVariable("user") String user) {
 		boolean doesUserExists = userService.userExists(user);
 		return doesUserExists;
 	}
 
+	@ApiOperation(
+			value = "User uses tfa?",
+			notes = "Check if user with provided email uses two factor authentication or not")
 	@GetMapping("uses-tfa/{user}")
 	public ResponseEntity<Boolean> checkTFAIsEnabledForUser(@PathVariable("user") String user) {
 		User account = userService.findByEmail(user);
@@ -122,6 +146,9 @@ public class AccountController {
 		return ResponseEntity.ok(using2fa);
 	}
 	
+	@ApiOperation(
+			value = "I forgot my password",
+			notes = "Send email to user with valid recovery hash to set a new password")
 	@PostMapping("forget")
 	public ResponseEntity<String> sendForgetPasswordEmail(@RequestBody String userEmail) {
 		User user = userService.findByEmail(userEmail);
@@ -129,6 +156,9 @@ public class AccountController {
 		return ResponseEntity.ok("The request to reset the password was successfully sent to your email, check your mailbox in a couple of seconds and follow the steps provided");
 	}
 	
+	@ApiOperation(
+			value = "Check user recovery",
+			notes = "Checks if user with provided email has already requested password recovery and has a valid hash")
 	@GetMapping("has-valid-hash/{user}")
 	public ResponseEntity<Boolean> checkIfUserHasAlreadyRequestedANewPassword(@PathVariable("user") String userEmail) {
 		User user = userService.findByEmail(userEmail);
@@ -141,6 +171,6 @@ public class AccountController {
 		userInformationMap.put("username", user);
 		userInformationMap.put("token", appToken);
 		return userInformationMap;
-	}	
+	}
 	
 }

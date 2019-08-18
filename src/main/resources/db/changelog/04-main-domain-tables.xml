@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="04" author="renan.rodrigues">
+
+        <createTable tableName="tbl_species">
+        
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="tbl_species_pkey"/>
+            </column>
+            
+            <column name="description" type="VARCHAR(255)"/>
+            
+        </createTable>
+        
+        <createTable tableName="tbl_medical_record">
+        
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="tbl_medical_record_pkey"/>
+            </column>
+            
+            <column name="animal_id" type="bigint"/>
+            
+        </createTable>
+        
+        <createTable tableName="tbl_medical_occurrence">
+        
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="tbl_medical_occurrence_pkey"/>
+            </column>
+            
+            <column name="description" type="VARCHAR(255)"/>
+            
+            <column name="medical_record_id" type="bigint"/>
+            
+            <column name="type" type="VARCHAR(255)"/>
+            
+            <column name="occurrence_date" type="date"/>
+            
+            <column name="paid" type="BOOL"/>
+            
+            <column name="service_id" type="bigint"/>
+            
+        </createTable>
+        
+        <createTable tableName="tbl_scheduling">
+        
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="tbl_scheduling_pkey"/>
+            </column>
+            
+            <column name="occurrence_id" type="bigint"/>
+            
+            <column name="initial_dt" type="date"/>
+            
+            <column name="final_dt" type="date"/>
+            
+        </createTable>
+        
+        <createTable tableName="tbl_clinic_service">
+        
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="tbl_clinic_service_pkey"/>
+            </column>
+            
+            <column name="name" type="VARCHAR(255)"/>
+            
+            <column name="description" type="VARCHAR(255)"/>
+            
+            <column name="active" type="BOOL"/>
+            
+            <column name="price" type="double"/>
+            
+        </createTable>
+        
+        <createTable tableName="tbl_vaccine">
+        
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="tbl_vaccine_pkey"/>
+            </column>
+
+            <column name="laboratory" type="VARCHAR(255)"/>
+            
+            <column name="group" type="VARCHAR(255)"/>
+            
+        </createTable>
+        
+        <createTable tableName="tbl_exam">
+        
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="tbl_exam_pkey"/>
+            </column>
+
+            <column name="instructions" type="VARCHAR(255)"/>
+            
+        </createTable>
+        
+        <createTable tableName="tbl_pathology">
+        
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="tbl_pathology_pkey"/>
+            </column>
+            
+        </createTable>
+        
+        <createTable tableName="tbl_consultation">
+        
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="tbl_consultation_pkey"/>
+            </column>
+            
+            <column name="form_model" type="VARCHAR(255)"/>
+            
+            <column name="time_spent" type="bigint"/>
+            
+            <column name="frequency" type="VARCHAR(255)"/>
+            
+        </createTable>
+        
+        <createTable tableName="tbl_petshop">
+        
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="tbl_petshop_pkey"/>
+            </column>
+            
+        </createTable>
+        
+        <createTable tableName="tbl_address">
+        
+            <column name="zip_code" type="VARCHAR(255)"/>
+            
+            <column name="number" type="bigint"/>
+            
+            <column name="street" type="VARCHAR(255)"/>
+            
+            <column name="district" type="VARCHAR(255)"/>
+            
+            <column name="city" type="VARCHAR(255)"/>
+            
+            <column name="state" type="VARCHAR(255)"/>
+            
+            <column name="country" type="VARCHAR(255)"/>
+            
+        </createTable>
+        
+        <addPrimaryKey columnNames="zip_code, number" constraintName="tbl_address_pkey" tableName="tbl_address"/>
+        
+        <createTable tableName="tbl_pet_owner">
+        
+            <column name="cpf" type="VARCHAR(255)">
+                <constraints primaryKey="true" primaryKeyName="tbl_pet_owner_pkey"/>
+            </column>
+            
+            <column name="date_inclusion" type="date"/>
+            
+            <column name="first_name" type="VARCHAR(255)"/>
+            
+            <column name="last_name" type="VARCHAR(255)"/>
+            
+            <column name="gender" type="char"/>
+            
+            <column name="nationality" type="VARCHAR(255)"/>
+            
+            <column name="date_born" type="date"/>
+            
+            <column name="phone" type="VARCHAR(255)"/>
+            
+            <column name="cell_phone" type="VARCHAR(255)"/>
+            
+            <column name="email" type="VARCHAR(255)"/>
+            
+            <column name="zip_code" type="VARCHAR(255)"/>
+            
+            <column name="number" type="bigint"/>
+            
+        </createTable>
+        
+        <createTable tableName="tbl_animal">
+        
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="tbl_animal_pkey"/>
+            </column>
+            
+            <column name="nick_name" type="VARCHAR(255)"/>
+            
+            <column name="date_born" type="date"/>
+            
+            <column name="alive" type="BOOL"/>
+            
+            <column name="weight" type="double"/>
+            
+            <column name="owner_id" type="VARCHAR(255)"/>
+            
+            <column name="species_id" type="bigint"/>
+            
+            <column name="medical_record_id" type="bigint"/>
+            
+            <column name="image_file" type="VARCHAR(255)"/>
+            
+        </createTable>
+
+		<addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="tbl_animal" constraintName="animal_pet_owner_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="cpf" referencedTableName="tbl_pet_owner"/>
+		<addForeignKeyConstraint baseColumnNames="species_id" baseTableName="tbl_animal" constraintName="animal_species_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_species"/>
+		
+		<addForeignKeyConstraint baseColumnNames="animal_id" baseTableName="tbl_medical_record" constraintName="medical_record_animal_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_animal"/>
+		
+		<addForeignKeyConstraint baseColumnNames="zip_code, number" baseTableName="tbl_pet_owner" constraintName="pet_owner_address_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zip_code, number" referencedTableName="tbl_address"/>
+		
+		<addForeignKeyConstraint baseColumnNames="medical_record_id" baseTableName="tbl_medical_occurrence" constraintName="medical_occurrence_medical_record_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_medical_record"/>
+		<addForeignKeyConstraint baseColumnNames="service_id" baseTableName="tbl_medical_occurrence" constraintName="medical_occurrence_clinic_service_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_clinic_service"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id" baseTableName="tbl_vaccine" constraintName="vaccine_clinic_service_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_clinic_service"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id" baseTableName="tbl_exam" constraintName="exam_clinic_service_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_clinic_service"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id" baseTableName="tbl_pathology" constraintName="pathology_clinic_service_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_clinic_service"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id" baseTableName="tbl_consultation" constraintName="consultation_clinic_service_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_clinic_service"/>
+		
+		<addForeignKeyConstraint baseColumnNames="id" baseTableName="tbl_petshop" constraintName="petshop_clinic_service_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_clinic_service"/>
+		
+		<addForeignKeyConstraint baseColumnNames="occurrence_id" baseTableName="tbl_scheduling" constraintName="scheduling_medical_occurrence_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_medical_occurrence"/>
+	    
+	</changeSet>
+	
+</databaseChangeLog>
