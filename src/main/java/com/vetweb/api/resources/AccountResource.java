@@ -42,9 +42,9 @@ import io.swagger.annotations.ApiResponses;
  * @author Renan Rodrigues
  */
 @RestController
-@RequestMapping("account")
+@RequestMapping("/account")
 @Api(value = "Handles authentication and authorization requests and provide useful user information")
-public class AccountController {
+public class AccountResource {
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;	
@@ -59,9 +59,9 @@ public class AccountController {
 	private PasswordRecoveryService recoveryService;
 	
 	@Value("${id.client.oauth}")
-	private String idClientOauth;	
+	private String idClientOauth;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AccountResource.class);
 	
 	@ApiOperation(
 			value = "Sign up new user",
