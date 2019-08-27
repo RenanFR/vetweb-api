@@ -46,13 +46,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter	{
 				.antMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/swagger.json").permitAll()
 				.antMatchers(HttpMethod.GET, "/webjars/**").permitAll()
-				.antMatchers(HttpMethod.POST, "/account").permitAll()
+				.antMatchers(HttpMethod.POST, "/login").permitAll()
+				.antMatchers(HttpMethod.POST, "/account/signin").permitAll()
 				.antMatchers(HttpMethod.GET, "/categories/test").permitAll()
 				.antMatchers(HttpMethod.GET, "/account/exists/{user}").permitAll()
 				.antMatchers(HttpMethod.GET, "/account/uses-tfa/{user}").permitAll()
 				.antMatchers(HttpMethod.GET, "/account/uses-tfa/{user}").permitAll()
-//				.antMatchers(HttpMethod.GET, "/species").permitAll()
-//				.antMatchers(HttpMethod.GET, "/species/{id}").permitAll()
 				.antMatchers(HttpMethod.GET, "/account/using-hash/{user}").permitAll()
 				.antMatchers(HttpMethod.POST, "/account/forget").permitAll()
 				.antMatchers(HttpMethod.PUT, "/account/update").permitAll()
@@ -60,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter	{
 				.anyRequest()
 				.authenticated()
 			.and()
-				.addFilterBefore(new JWTLoginFilter("/account", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(new JWTLoginFilter("/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(new JWTAuthenticationVerifier(), UsernamePasswordAuthenticationFilter.class);
 	}
 	

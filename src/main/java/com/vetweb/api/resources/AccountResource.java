@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vetweb.api.config.auth.TokenService;
+import com.vetweb.api.model.auth.AuthInfoDTO;
 import com.vetweb.api.model.auth.NewUserDTO;
 import com.vetweb.api.model.auth.PasswordRecovery;
 import com.vetweb.api.model.auth.User;
@@ -112,11 +113,11 @@ public class AccountResource {
 	@ApiOperation(
 			value = "Sign in with existent user",
 			notes = "Authenticate user with provided credentials checking if he exists and has enabled access")
-	@PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
+	@PostMapping(value = "signin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Map<String, String>> login(@RequestBody AuthInfoDTO user) {
 		try {
 			String email = user.getEmail();
-			String password = (!user.isSocialLogin()) ? user.getPassword() : "";
+			String password = user.getPassword();
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
 			UserDetails loadUser = userService.loadUserByUsername(email);
 			String token = TokenService.createToken(email);
