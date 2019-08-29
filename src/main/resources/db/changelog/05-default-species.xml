@@ -12,7 +12,6 @@
 	            schemaName="public"
 	            tableName="tbl_species">
 	            
-            <column name="id" type="BIGINT" valueNumeric="1"/>
             <column name="description" type="VARCHAR(255)" value="Peixe"/>
             
 	    </insert>	    

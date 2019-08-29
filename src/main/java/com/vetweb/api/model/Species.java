@@ -9,10 +9,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
@@ -29,10 +32,13 @@ public class Species extends ResourceSupport implements ClinicEntity {
 
 	@Getter
 	@Setter
+	@NotNull
+	@NotBlank
+	@JsonProperty("_description")
 	private String description;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "species")
-	@JsonBackReference
+	@JsonIgnore
 	private List<Animal> animalsOf;
 
 	@Override

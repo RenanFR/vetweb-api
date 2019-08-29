@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
@@ -27,12 +27,12 @@ public class MedicalRecord {
 	private Long id; 
 	
 	@OneToOne
-	@JsonManagedReference
+	@JsonManagedReference("animal")
 	@JoinColumn(name = "animal_id", referencedColumnName = "id")
 	private Animal animal;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "medicalRecord")
-	@JsonBackReference
+	@JsonIgnore
 	private List<MedicalOccurrence> occurrences;
 
 }

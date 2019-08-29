@@ -13,7 +13,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -41,17 +40,15 @@ public class Animal {
 	private Double weight;
 	
 	@ManyToOne
-	@JsonManagedReference
 	@JoinColumn(name = "species_id", referencedColumnName = "id")
 	private Species species;
 	
 	@ManyToOne
-	@JsonManagedReference
 	@JoinColumn(name = "owner_id", referencedColumnName = "cpf")
 	private PetOwner petOwner;
 	
 	@OneToOne(mappedBy = "animal")
-	@JsonBackReference
+	@JsonBackReference("animal")
 	private MedicalRecord medicalRecord;
 	
 	@Column(name = "image_file")

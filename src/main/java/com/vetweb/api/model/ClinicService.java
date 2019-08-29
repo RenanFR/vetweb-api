@@ -35,7 +35,7 @@ public class ClinicService {
 	private BigDecimal price;
 	
 	@OneToMany(mappedBy = "clinicService")
-	@JsonBackReference
+	@JsonBackReference("clinicService")
 	private List<MedicalOccurrence> occurrences;	
 
 }

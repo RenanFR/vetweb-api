@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import lombok.Data;
 
 @Entity
@@ -25,7 +23,6 @@ public class Scheduling {
 	private Long id;
 	
 	@ManyToOne
-	@JsonManagedReference
 	@JoinColumn(name = "occurrence_id", referencedColumnName = "id")
 	private MedicalOccurrence occurrence;
 	

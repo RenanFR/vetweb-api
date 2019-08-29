@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
@@ -35,12 +35,11 @@ public abstract class MedicalOccurrence {
 	private String description;
 	
 	@ManyToOne
-	@JsonManagedReference
 	@JoinColumn(name = "medical_record_id", referencedColumnName = "id")
 	private MedicalRecord medicalRecord;
 	
 	@OneToMany(mappedBy = "occurrence")
-	@JsonBackReference
+	@JsonIgnore
 	private List<Scheduling> schedulings;
 	
 	@Enumerated(EnumType.STRING)
@@ -52,7 +51,7 @@ public abstract class MedicalOccurrence {
 	private boolean paid;
 	
 	@ManyToOne
-	@JsonManagedReference
+	@JsonManagedReference("clinicService")
 	@JoinColumn(name = "service_id", referencedColumnName = "id")
 	private ClinicService clinicService;
 

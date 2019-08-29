@@ -9,7 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 public class PetOwner extends Person {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "petOwner")
-	@JsonBackReference
+	@JsonIgnore
 	private List<Animal> animalsOwned;
 	
 	@Column(name = "date_inclusion")
