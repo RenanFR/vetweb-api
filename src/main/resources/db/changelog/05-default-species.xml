@@ -8,7 +8,7 @@
 
 	<changeSet id="05" author="renan.rodrigues">
 	    
-	    <insert catalogName="opinionated"
+	    <insert catalogName="pg_catalog"
 	            schemaName="public"
 	            tableName="tbl_species">
 	            

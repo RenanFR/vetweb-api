@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="06" author="renan.rodrigues">
+	
+	    <insert catalogName="pg_catalog"
+	            schemaName="public"
+	            tableName="tbl_profile">
+	        <column name="role" type="VARCHAR(255)" value="RECEPTION"/>
+	    </insert>
+	    
+	    <insert catalogName="pg_catalog"
+	            schemaName="public"
+	            tableName="tbl_profile">
+	        <column name="role" type="VARCHAR(255)" value="VETERINARY"/>
+	    </insert>
+	    
+	    <delete catalogName="pg_catalog"
+	            schemaName="public"
+	            tableName="tbl_user_profile">
+	        <where>profile_id = 'ROLE'</where>
+	    </delete>
+	    
+	    <update catalogName="pg_catalog"
+	            schemaName="public"
+	            tableName="tbl_profile">
+	        <column name="role" type="varchar(255)" value="PET_OWNER"/>
+	        <where>role = 'ROLE'</where>
+	    </update>
+	    
+	    <insert catalogName="pg_catalog"
+	            schemaName="public"
+	            tableName="tbl_user_profile">
+	            
+            <column name="user_id" type="BIGINT" valueNumeric="1"/>
+            <column name="profile_id" type="VARCHAR(255)" value="PET_OWNER"/>
+            
+	    </insert>	    
+            
+	</changeSet>
+	
+</databaseChangeLog>

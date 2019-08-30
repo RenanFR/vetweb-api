@@ -24,6 +24,13 @@ public class Profile implements GrantedAuthority{
 	@JsonBackReference
 	private List<User> users;
 
+	public Profile() {
+	}
+
+	public Profile(String role) {
+		this.role = role;
+	}
+
 	public String getRole() {
 		return role;
 	}

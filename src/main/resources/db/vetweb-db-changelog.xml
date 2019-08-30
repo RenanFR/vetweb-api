@@ -48,5 +48,6 @@
     <include file="changelog/03-password-recovery-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/04-main-domain-tables.xml" relativeToChangelogFile="true"/>
     <include file="changelog/05-default-species.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/06-default-profiles.xml" relativeToChangelogFile="true"/>
     
 </databaseChangeLog>

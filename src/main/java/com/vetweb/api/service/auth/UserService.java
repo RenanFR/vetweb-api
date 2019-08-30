@@ -3,6 +3,7 @@ package com.vetweb.api.service.auth;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -67,12 +68,7 @@ public class UserService implements UserDetailsService {
 	}
 	
 	public String signUp(User user) {
-		List<Profile> allProfile = user.getProfiles();
-		for (Profile profile : allProfile) {
-			if (profileRepository.findById(profile.getRole()).get() == null) {
-				profileRepository.save(profile);
-			}
-		}
+		user.setProfiles(Arrays.asList(profileRepository.findById("PET_OWNER").get()));
 		if (user.isUsing2FA()) {
 			user.setTwoFASecret(Base32.random());
 		}
