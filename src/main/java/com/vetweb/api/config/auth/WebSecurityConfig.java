@@ -53,6 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter	{
 				.antMatchers(HttpMethod.GET, "/account/uses-tfa/{user}").permitAll()
 				.antMatchers(HttpMethod.GET, "/account/uses-tfa/{user}").permitAll()
 				.antMatchers(HttpMethod.GET, "/account/using-hash/{user}").permitAll()
+				.antMatchers(HttpMethod.GET, "/account/has-valid-hash/{user}").permitAll()
 				.antMatchers(HttpMethod.POST, "/account/forget").permitAll()
 				.antMatchers(HttpMethod.PUT, "/account/update").permitAll()
 				.antMatchers(HttpMethod.POST, "/account/google").permitAll()
