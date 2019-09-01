@@ -54,6 +54,7 @@ public class PostmarkMailSender {
 			LOGGER.info(String.format("Reset password email sent to user %s at %s", user.getName(), messageResponse.getSubmittedAt().toString()));
 		} catch (PostmarkException postmarkException) {
 			LOGGER.error("Library error " + postmarkException.getMessage());
+			throw new RuntimeException("Cannot send email, receiver domain should be accountfy");
 		} catch (IOException ioException) {
 			LOGGER.error("Generic error " + ioException.getMessage());
 		}

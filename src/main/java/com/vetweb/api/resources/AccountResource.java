@@ -26,10 +26,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vetweb.api.config.auth.TokenService;
+import com.vetweb.api.exception.EmailException;
 import com.vetweb.api.model.auth.AuthInfoDTO;
 import com.vetweb.api.model.auth.NewUserDTO;
 import com.vetweb.api.model.auth.PasswordRecovery;
 import com.vetweb.api.model.auth.User;
+import com.vetweb.api.pojo.SimpleMessageResponse;
 import com.vetweb.api.service.PostmarkMailSender;
 import com.vetweb.api.service.auth.PasswordRecoveryService;
 import com.vetweb.api.service.auth.UserService;
@@ -151,10 +153,14 @@ public class AccountResource {
 			value = "I forgot my password",
 			notes = "Send email to user with valid recovery hash to set a new password")
 	@PostMapping("forget")
-	public ResponseEntity<String> sendForgetPasswordEmail(@RequestBody String userEmail) {
+	public ResponseEntity<SimpleMessageResponse> sendForgetPasswordEmail(@RequestBody String userEmail) {
 		User user = userService.findByEmail(userEmail);
-		postmarkMailSender.sendForgotPasswordEmail(user);
-		return ResponseEntity.ok("The request to reset the password was successfully sent to your email, check your mailbox in a couple of seconds and follow the steps provided");
+		try {
+			postmarkMailSender.sendForgotPasswordEmail(user);
+		} catch (RuntimeException exception) {
+			throw new EmailException(exception.getMessage());
+		}
+		return ResponseEntity.ok(new SimpleMessageResponse("The request to reset the password was successfully sent to your email, check your mailbox in a couple of seconds and follow the steps provided"));
 	}
 	
 	@ApiOperation(
