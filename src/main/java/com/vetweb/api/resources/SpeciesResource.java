@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vetweb.api.model.ClinicEntity;
 import com.vetweb.api.model.Species;
 import com.vetweb.api.service.SpeciesService;
+import com.vetweb.api.utils.FileService;
 import com.vetweb.api.utils.GenericController;
 
 import io.swagger.annotations.Api;
@@ -30,6 +31,9 @@ public class SpeciesResource implements GenericController<Species> {
 	
 	@Autowired
 	private SpeciesService speciesService;
+	
+	@Autowired
+	private FileService fileService;	
 	
 	private Link addSelfLink(GenericController controller, ClinicEntity entity) {
 		return linkTo(methodOn(controller.getClass()).searchById(entity.getEntityId())).withSelfRel();
@@ -45,7 +49,6 @@ public class SpeciesResource implements GenericController<Species> {
 		speciesCreated.add(addSelfLink(this, speciesCreated));
 		return ResponseEntity.ok(speciesCreated);
 	}
-
 	
 	@GetMapping("{id}")
 	public ResponseEntity<Species> searchById(@PathVariable("id")Long id) {

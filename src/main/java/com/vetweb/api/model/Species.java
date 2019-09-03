@@ -14,8 +14,9 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
@@ -24,21 +25,21 @@ import lombok.Setter;
 @Entity
 @Table(name = "tbl_species")
 @ApiModel(value = "Represents every kind of animal species that can be received in the clinic")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Species extends ResourceSupport implements ClinicEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonProperty("id")
 	private Long id;
 
 	@Getter
 	@Setter
 	@NotNull
 	@NotBlank
-	@JsonProperty("_description")
 	private String description;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "species")
-	@JsonIgnore
 	private List<Animal> animalsOf;
 
 	@Override

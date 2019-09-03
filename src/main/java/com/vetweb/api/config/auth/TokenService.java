@@ -50,12 +50,13 @@ public class TokenService {
 		claims.put("inclusionDate", user.getInclusionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		String profiles = user.getAuthorities().stream().map(r -> r.getAuthority()).collect(Collectors.joining(","));
 		claims.put("profiles", profiles);
-		return TOKEN_PREFIX + " " + Jwts.builder()
+		String jwt = TOKEN_PREFIX + " " + Jwts.builder()
 			.setSubject(user.getUsername())
 			.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
 			.addClaims(claims)
 			.signWith(SignatureAlgorithm.HS512, SECRET)
 			.compact();
+		return jwt;
 	}
 	
 	public static Authentication getTokenFromRequest(HttpServletRequest request) {
@@ -63,7 +64,7 @@ public class TokenService {
 		if (jwt != null) {
 			String userFromToken = Jwts.parser()
 					.setSigningKey(SECRET)
-					.parseClaimsJws(jwt.replace(TOKEN_PREFIX, ""))
+					.parseClaimsJws(jwt.replace((TOKEN_PREFIX + " "), ""))
 					.getBody()
 					.getSubject();
 			if (userFromToken != null) {
