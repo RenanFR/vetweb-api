@@ -47,7 +47,7 @@ public class Person {
 	@JsonBackReference
 	@JoinColumns({
 		@JoinColumn(name = "zip_code", referencedColumnName = "zip_code"),
-		@JoinColumn(name = "number", referencedColumnName = "number")
+		@JoinColumn(name = "num", referencedColumnName = "num")
 	})
 	private Address address;
 	

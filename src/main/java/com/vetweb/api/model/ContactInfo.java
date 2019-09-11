@@ -3,10 +3,14 @@ package com.vetweb.api.model;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @Embeddable
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 public class ContactInfo {
 	
 	private String phone;

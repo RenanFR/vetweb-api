@@ -9,16 +9,22 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Entity
 @Table(name = "tbl_address")
 @Data
+@AllArgsConstructor
 public class Address {
 	
 	@EmbeddedId
 	private AddressPrimaryKey pk;
 	
+	public Address(AddressPrimaryKey pk) {
+		this.pk = pk;
+	}
+
 	private String street;
 	
 	private String district;

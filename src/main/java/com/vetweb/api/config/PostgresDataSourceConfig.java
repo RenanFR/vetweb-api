@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -44,7 +45,7 @@ public class PostgresDataSourceConfig {
 				.dataSource(dataSource)
 				.properties(properties)
 				.packages("com.vetweb.api.model")
-				.persistenceUnit("pg")
+				.persistenceUnit("vetweb-pg")
 				.build();
 	}
 	
@@ -52,6 +53,12 @@ public class PostgresDataSourceConfig {
 	@Bean(name = "tx-manager")
 	public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactory") EntityManagerFactory factory) {
 		return new JpaTransactionManager(factory);
+	}
+	
+	@Primary
+	@Bean(name = "pg-jdbc-template")
+	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+		return new JdbcTemplate(dataSource);
 	}
 	
 }

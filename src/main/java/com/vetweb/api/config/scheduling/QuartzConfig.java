@@ -5,6 +5,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
+import com.vetweb.api.jobs.BirthdayJobTrigger;
 import com.vetweb.api.jobs.HelloWorldJob;
 
 import static org.quartz.JobBuilder.newJob;
@@ -20,6 +22,9 @@ import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 @Configuration
@@ -34,14 +39,27 @@ public class QuartzConfig {
 	}
 	
 	@Bean
-	public Trigger triggerHelloWorld(JobDetail job) {
+	public JobDetail birthdayJobTrg() {
+		return newJob(BirthdayJobTrigger.class).storeDurably().withIdentity("job-birthday").withDescription("Job to notify congratulations message on birthday").build();
+	}
+	
+	@Bean
+	public Trigger triggerHelloWorld(@Qualifier("jobHelloWorld") JobDetail job) {
 		return newTrigger().forJob(job).withIdentity("trg-hello-world").withDescription("Trigger to first Hello World job").withSchedule(simpleSchedule().withIntervalInSeconds(10).repeatForever()).build();
 	}
 	
 	@Bean
-	public Scheduler scheduler(Trigger trigger, JobDetail job, SchedulerFactoryBean schedulerFactory) throws SchedulerException {
+	public Trigger triggerBirthday(@Qualifier("birthdayJobTrg") JobDetail job) {
+		return newTrigger().forJob(job).withIdentity("trg-birthday").withDescription("Trigger to birthday job").withSchedule(simpleSchedule().withIntervalInMinutes(10).repeatForever()).build();
+	}
+	
+	@Bean
+	@Autowired
+	public Scheduler scheduler(List<Trigger> triggers, List<JobDetail> jobs, SchedulerFactoryBean schedulerFactory) throws SchedulerException {
 		Scheduler scheduler = schedulerFactory.getScheduler();
-		scheduler.scheduleJob(job, trigger);
+		for (JobDetail j : jobs) {
+			scheduler.scheduleJob(j, triggers.stream().filter(trg -> trg.getJobKey().equals(j.getKey())).findAny().get());
+		}
 		scheduler.start();
 		return scheduler;
 	}
