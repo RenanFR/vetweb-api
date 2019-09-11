@@ -9,6 +9,7 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,13 +22,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 @EnableBatchProcessing
 public class BatchConfig {
 	
-	@Value("classpath:/org/springframework/batch/core/schema-drop-postgresql.sql")
+	@Value("classpath:/org/springframework/batch/core/schema-drop-h2.sql")
 	private Resource sqlSchemaBatchDrop;
 	
-	@Value("classpath:/org/springframework/batch/core/schema-postgresql.sql")
+	@Value("classpath:/org/springframework/batch/core/schema-h2.sql")
 	private Resource sqlSchemaBatchCreate;
 	
 	@Autowired
+	@Qualifier("h2-datasource")
 	private DataSource dataSource;
 	
 	@Bean
