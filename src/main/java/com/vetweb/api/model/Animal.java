@@ -44,7 +44,7 @@ public class Animal {
 	private Species species;
 	
 	@ManyToOne
-	@JoinColumn(name = "owner_id", referencedColumnName = "cpf")
+	@JoinColumn(name = "owner_id", referencedColumnName = "id")
 	private PetOwner petOwner;
 	
 	@OneToOne(mappedBy = "animal")

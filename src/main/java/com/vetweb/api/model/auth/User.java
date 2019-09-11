@@ -48,6 +48,7 @@ public class User implements UserDetails {
 	@Column(name = "is_social_login")
 	private boolean socialLogin;
 	
+	@Column(name = "inclusion_date")
 	private LocalDate inclusionDate;
 	
 	@ManyToMany(fetch = FetchType.EAGER)

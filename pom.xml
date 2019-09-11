@@ -46,6 +46,26 @@
 		    <artifactId>spring-hateoas</artifactId>
 		</dependency>
 		
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.batch</groupId>
+            <artifactId>spring-batch-core</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+        </dependency>   
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>             
+		
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
@@ -55,6 +75,17 @@
 	        <groupId>org.postgresql</groupId>
 	        <artifactId>postgresql</artifactId>
 	    </dependency>
+	    
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        
+		<dependency>
+		   <groupId>com.mchange</groupId>
+		   <artifactId>c3p0</artifactId>
+		   <version>0.9.5.1</version>
+		</dependency>        	    
 	    
 		<dependency>
 		    <groupId>org.jboss.aerogear</groupId>
@@ -101,7 +132,12 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>
+
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+        </dependency>
 		
 	</dependencies>
 

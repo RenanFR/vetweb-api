@@ -33,6 +33,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter	{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+			.headers()
+				.frameOptions()
+				.disable()
+			.and()
 			.httpBasic()
 				.disable()
 			.csrf()
@@ -43,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter	{
 				.authorizeRequests()
 				.antMatchers(HttpMethod.GET, "/v2/api-docs").permitAll()
 				.antMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
+				.antMatchers("/h2-console/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/swagger.json").permitAll()
 				.antMatchers(HttpMethod.GET, "/webjars/**").permitAll()

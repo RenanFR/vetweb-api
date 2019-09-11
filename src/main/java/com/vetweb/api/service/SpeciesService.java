@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vetweb.api.model.Species;
-import com.vetweb.api.persist.auth.SpeciesRepository;
+import com.vetweb.api.persist.SpeciesRepository;
 
 @Service
 public class SpeciesService {

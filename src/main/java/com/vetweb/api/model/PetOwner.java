@@ -18,7 +18,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "tbl_pet_owner")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class PetOwner extends Person {
+public class PetOwner extends Person implements ClinicEntity {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "petOwner")
 	@JsonIgnore
@@ -30,5 +30,10 @@ public class PetOwner extends Person {
 	private boolean active;
 	
 	private String profession;
+
+	@Override
+	public Long getEntityId() {
+		return getId();
+	}
 	
 }

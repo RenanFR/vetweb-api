@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="07" author="renan.rodrigues">
+	
+    	<dropForeignKeyConstraint baseTableName="tbl_animal" constraintName="animal_pet_owner_fkey"/>
+	
+	    <dropPrimaryKey catalogName="pg_catalog"
+	            constraintName="tbl_pet_owner_pkey"
+	            schemaName="public"
+	            tableName="tbl_pet_owner"/>
+
+	    <addColumn catalogName="pg_catalog"
+	            schemaName="public"
+	            tableName="tbl_pet_owner">
+	        <column autoIncrement="true" name="id" type="BIGSERIAL"/>
+	    </addColumn>
+	    
+	    <addPrimaryKey catalogName="pg_catalog"
+	            columnNames="id"
+	            constraintName="tbl_pet_owner_pkey"
+	            schemaName="public"
+	            tableName="tbl_pet_owner"/>
+
+	    <dropColumn catalogName="pg_catalog"
+	            columnName="owner_id"
+	            schemaName="public"
+	            tableName="tbl_animal"/>
+	            
+	    <addColumn catalogName="pg_catalog"
+	            schemaName="public"
+	            tableName="tbl_animal">
+	        <column name="owner_id" type="bigint"/>
+	    </addColumn>	            
+	            
+		<addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="tbl_animal" constraintName="animal_pet_owner_fkey" 
+				deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_pet_owner"/>	            
+	            
+    	<dropForeignKeyConstraint baseTableName="tbl_pet_owner" constraintName="pet_owner_address_fkey"/>
+	            
+	    <dropPrimaryKey catalogName="pg_catalog"
+	            constraintName="tbl_address_pkey"
+	            schemaName="public"
+	            tableName="tbl_address"/>	            
+	            
+	    <renameColumn catalogName="pg_catalog"
+	            columnDataType="bigint"
+	            newColumnName="num"
+	            oldColumnName="number"
+	            schemaName="public"
+	            tableName="tbl_address"/>
+	            
+	    <renameColumn catalogName="pg_catalog"
+	            columnDataType="bigint"
+	            newColumnName="num"
+	            oldColumnName="number"
+	            schemaName="public"
+	            tableName="tbl_pet_owner"/>	            
+	            
+	    <addPrimaryKey catalogName="pg_catalog"
+	            columnNames="zip_code, num"
+	            constraintName="tbl_address_pkey"
+	            schemaName="public"
+	            tableName="tbl_address"/>	        
+	            
+		<addForeignKeyConstraint baseColumnNames="zip_code, num" baseTableName="tbl_pet_owner" constraintName="pet_owner_address_fkey" 
+				deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="zip_code, num" referencedTableName="tbl_address"/>	                	               
+	
+	</changeSet>
+	
+</databaseChangeLog>
