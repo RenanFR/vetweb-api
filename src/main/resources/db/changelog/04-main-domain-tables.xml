@@ -148,6 +148,18 @@
             
         </createTable>
         
+	    <addNotNullConstraint catalogName="pg_catalog"
+	            columnDataType="VARCHAR(255)"
+	            columnName="zip_code"
+	            schemaName="public"
+	            tableName="tbl_address"/>
+	                    
+	    <addNotNullConstraint catalogName="pg_catalog"
+	            columnDataType="bigint"
+	            columnName="number"
+	            schemaName="public"
+	            tableName="tbl_address"/>        
+        
         <addPrimaryKey columnNames="zip_code, number" constraintName="tbl_address_pkey" tableName="tbl_address"/>
         
         <createTable tableName="tbl_pet_owner">

@@ -1,8 +1,5 @@
 package com.vetweb.api.config.batch;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoField;
-
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
@@ -24,7 +21,7 @@ import com.vetweb.api.model.PetOwner;
 import com.vetweb.api.model.h2.BirthdayBoy;
 
 @Configuration
-@PropertySource("sql.properties")
+@PropertySource("classpath:sql.properties")
 public class BirthdayJob {
 	
 	@Autowired

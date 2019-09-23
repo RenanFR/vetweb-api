@@ -1,5 +1,13 @@
 package com.vetweb.api.config.scheduling;
 
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
+import static org.quartz.TriggerBuilder.newTrigger;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
+
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -16,16 +24,6 @@ import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
 import com.vetweb.api.jobs.BirthdayJobTrigger;
 import com.vetweb.api.jobs.HelloWorldJob;
-
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
-import static org.quartz.TriggerBuilder.newTrigger;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
 
 @Configuration
 public class QuartzConfig {

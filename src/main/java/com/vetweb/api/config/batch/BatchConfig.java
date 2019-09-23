@@ -2,6 +2,8 @@ package com.vetweb.api.config.batch;
 
 import javax.sql.DataSource;
 
+import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
+import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
@@ -61,6 +63,11 @@ public class BatchConfig {
 		jobLauncher.setJobRepository(getJobRepository());
 		jobLauncher.afterPropertiesSet();
 		return jobLauncher;
+	}
+	
+	@Bean
+	public BatchConfigurer batchConfigurer() {
+		return new DefaultBatchConfigurer(dataSource);
 	}
 
 }

@@ -13,7 +13,6 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,7 +28,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
   transactionManagerRef = "h2-tx-manager",
   basePackages = { "com.vetweb.api.persist.h2" }
 )
-@PropertySource("quartz.properties")
+@PropertySource("classpath:quartz.properties")
 public class H2DataSourceConfig {
 	
 	@Bean(name = "h2-datasource")

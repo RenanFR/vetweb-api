@@ -18,7 +18,7 @@ import com.vetweb.api.model.h2.BirthdayBoy;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@PropertySource("sql.properties")
+@PropertySource("classpath:sql.properties")
 public class BirthdayWriter implements ItemWriter<BirthdayBoy> {
 	
 	@Autowired
