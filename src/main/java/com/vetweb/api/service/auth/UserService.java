@@ -23,7 +23,7 @@ import com.vetweb.api.persist.auth.ProfileRepository;
 import com.vetweb.api.persist.auth.UserRepository;
 
 @Service
-@PropertySource("classpath:2fa.properties")
+@PropertySource("classpath:vetweb.properties")
 public class UserService implements UserDetailsService {
 	
 	@Autowired
@@ -37,9 +37,9 @@ public class UserService implements UserDetailsService {
 	
 	private static final String QR_PREFIX = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
 	
-	private static String APP_NAME ;
+	private static String APP_NAME;
 
-	@Value("${app.name}")
+	@Value("${api.title}")
 	public void setAppName(String appName) {
 		APP_NAME = appName;
 	}
@@ -105,6 +105,10 @@ public class UserService implements UserDetailsService {
 	
 	public Profile findProfileByDescription(String id) {
 		return profileRepository.findById(id).get();
+	}
+	
+	public void remove(User user) {
+		userRepository.delete(user);
 	}
 	
 	public String generateQRCode(User account) throws UnsupportedEncodingException {

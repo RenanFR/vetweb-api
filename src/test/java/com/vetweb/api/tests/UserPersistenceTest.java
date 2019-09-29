@@ -59,14 +59,14 @@ public class UserPersistenceTest {
 		User user = User
 				.builder()
 				.name("user")
-				.email("user@email com")
+				.email("user@email.com")
 				.password("password")
 				.profiles(List.of(savedProfile))
 				.build();
 		User saved = userRepository.save(user);
 		assertEquals(2, saved.getId(), 0);
 	}
-	
+
 	@Test
 	public void testFindUser() {
 		assertTrue(userRepository.findByName("Renan Rodrigues").isPresent());
