@@ -22,9 +22,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
 //Model for user information
 @Entity
 @Table(name = "tbl_user")
+@AllArgsConstructor
+@Builder
 public class User implements UserDetails {
 	
 	private static final long serialVersionUID = 1L;

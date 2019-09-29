@@ -11,17 +11,28 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name = "tbl_profile")
+@AllArgsConstructor
+@Builder
 public class Profile implements GrantedAuthority{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@Getter
+	@Setter
 	private String role;
 	
 	@ManyToMany(mappedBy = "profiles")
 	@JsonBackReference
+	@Getter
+	@Setter
 	private List<User> users;
 
 	public Profile() {
@@ -31,25 +42,9 @@ public class Profile implements GrantedAuthority{
 		this.role = role;
 	}
 
-	public String getRole() {
-		return role;
-	}
-
 	@Override
 	public String getAuthority() {
 		return role;
-	}
-	
-	public void setRole(String role) {
-		this.role = role;
-	}
-
-	public List<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
 	}
 
 }
