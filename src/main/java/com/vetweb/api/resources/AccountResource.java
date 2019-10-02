@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ import com.vetweb.api.service.PostmarkMailSender;
 import com.vetweb.api.service.auth.PasswordRecoveryService;
 import com.vetweb.api.service.auth.UserService;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -61,10 +65,20 @@ public class AccountResource {
 	@Autowired
 	private PasswordRecoveryService recoveryService;
 	
+	@Autowired
+	private MeterRegistry registry;
+	
 	@Value("${id.client.oauth}")
 	private String idClientOauth;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountResource.class);
+	
+	private Counter authenticationCounter;
+	
+	@PostConstruct
+	public void initializeCounters() {
+		authenticationCounter = registry.counter("user.authentication.count");
+	}
 	
 	@ApiOperation(
 			value = "Sign up new user",
@@ -124,6 +138,7 @@ public class AccountResource {
 			UserDetails loadUser = userService.loadUserByUsername(email);
 			String token = TokenService.createToken(email);
 			Map<String, String> userInformationMap = buildUserInformationMap(loadUser.getUsername(), token);
+			authenticationCounter.increment();
 			return ok(userInformationMap);
 		} catch (AuthenticationException authenticationException) {
 			throw new BadCredentialsException("Authentication data provided is invalid");
