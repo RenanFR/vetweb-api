@@ -68,17 +68,17 @@ public class AccountResource {
 	@Autowired
 	private MeterRegistry registry;
 	
+	private Counter nonexistentCounter;
+	
 	@Value("${id.client.oauth}")
 	private String idClientOauth;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountResource.class);
 	
-	private Counter authenticationCounter;
-	
 	@PostConstruct
 	public void initializeCounters() {
-		authenticationCounter = registry.counter("user.authentication.count");
-	}
+		nonexistentCounter = registry.counter("nonexistent.user.check");
+	}	
 	
 	@ApiOperation(
 			value = "Sign up new user",
@@ -138,7 +138,7 @@ public class AccountResource {
 			UserDetails loadUser = userService.loadUserByUsername(email);
 			String token = TokenService.createToken(email);
 			Map<String, String> userInformationMap = buildUserInformationMap(loadUser.getUsername(), token);
-			authenticationCounter.increment();
+			registry.counter("user.authentication.count", "email", email).increment();
 			return ok(userInformationMap);
 		} catch (AuthenticationException authenticationException) {
 			throw new BadCredentialsException("Authentication data provided is invalid");
@@ -151,6 +151,9 @@ public class AccountResource {
 	@GetMapping("exists/{user}")
 	public boolean userExists(@PathVariable("user") String user) {
 		boolean doesUserExists = userService.userExists(user);
+		if (!doesUserExists) {
+			nonexistentCounter.increment();
+		}
 		return doesUserExists;
 	}
 
