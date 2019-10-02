@@ -43,12 +43,12 @@ public class QuartzConfig {
 	
 	@Bean
 	public Trigger triggerHelloWorld(@Qualifier("jobHelloWorld") JobDetail job) {
-		return newTrigger().forJob(job).withIdentity("trg-hello-world").withDescription("Trigger to first Hello World job").withSchedule(simpleSchedule().withIntervalInSeconds(10).repeatForever()).build();
+		return newTrigger().forJob(job).withIdentity("trg-hello-world").withDescription("Trigger to first Hello World job").withSchedule(simpleSchedule().withIntervalInMinutes(10).repeatForever()).build();
 	}
 	
 	@Bean
 	public Trigger triggerBirthday(@Qualifier("birthdayJobTrg") JobDetail job) {
-		return newTrigger().forJob(job).withIdentity("trg-birthday").withDescription("Trigger to birthday job").withSchedule(simpleSchedule().withIntervalInMinutes(10).repeatForever()).build();
+		return newTrigger().forJob(job).withIdentity("trg-birthday").withDescription("Trigger to birthday job").withSchedule(simpleSchedule().withIntervalInHours(10).repeatForever()).build();
 	}
 	
 	@Bean
