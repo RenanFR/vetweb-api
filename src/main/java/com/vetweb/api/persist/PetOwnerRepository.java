@@ -2,6 +2,7 @@ package com.vetweb.api.persist;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,6 +53,17 @@ public class PetOwnerRepository {
 			petOwner.getAddress().getPk().getZipCode(), petOwner.getAddress().getPk().getNumber() 
 		});
 		return jdbcTemplate.queryForObject(QRY_COUNT, Integer.class);
+	}
+	
+	public PetOwner searchById(Long id) {
+		return jdbcTemplate.queryForObject("SELECT * FROM tbl_pet_owner po JOIN tbl_address ad ON po.zip_code = ad.zip_code AND po.num = ad.num  WHERE id = ?;", 
+				new PetOwnerRowMapper(), 
+				new Object[ ] { id });
+	}
+	
+	public List<PetOwner> searchAll() {
+		return jdbcTemplate.query("SELECT * FROM tbl_pet_owner po JOIN tbl_address ad ON po.zip_code = ad.zip_code AND po.num = ad.num;", 
+				new PetOwnerRowMapper());
 	}
 
 }

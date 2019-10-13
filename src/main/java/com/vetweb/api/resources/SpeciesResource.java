@@ -27,6 +27,7 @@ public class SpeciesResource implements GenericController<Species> {
 	@Autowired
 	private SpeciesService speciesService;
 	
+	@Override
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Species> create(@RequestBody Species species) {
 		Species speciesCreated = speciesService.create(species);

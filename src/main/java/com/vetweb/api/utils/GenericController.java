@@ -17,6 +17,8 @@ public interface GenericController<E extends ClinicEntity> {
 	
 	ResponseEntity<List<E>> searchAll();
 	
+	ResponseEntity<E> create(E entity);
+	
 	default Link addSelfLink(GenericController<E> controller, ClinicEntity entity) {
 		return linkTo(methodOn(controller.getClass()).searchById(entity.getEntityId())).withSelfRel();
 	}
