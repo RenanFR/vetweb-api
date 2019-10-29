@@ -1,6 +1,7 @@
 package com.vetweb.api.resources;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,12 +26,12 @@ import io.swagger.annotations.Api;
 public class SpeciesResource implements GenericController<Species> {
 	
 	@Autowired
-	private SpeciesService speciesService;
+	private SpeciesService service;
 	
 	@Override
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Species> create(@RequestBody Species species) {
-		Species speciesCreated = speciesService.create(species);
+		Species speciesCreated = service.create(species);
 		speciesCreated.add(addSelfLink(this, speciesCreated));
 		return ResponseEntity.ok(speciesCreated);
 	}
@@ -38,7 +39,7 @@ public class SpeciesResource implements GenericController<Species> {
 	@Override
 	@GetMapping("{id}")
 	public ResponseEntity<Species> searchById(@PathVariable("id")Long id) {
-		Species species = speciesService.searchById(id);
+		Species species = service.searchById(id).get();
 		species.add(addListLink(this, EntityType.SPECIES));
 		return ResponseEntity.ok(species);
 	}
@@ -46,9 +47,18 @@ public class SpeciesResource implements GenericController<Species> {
 	@Override
 	@GetMapping
 	public ResponseEntity<List<Species>> searchAll() {
-		List<Species> all = speciesService.searchAll();
+		List<Species> all = service.searchAll();
 		all.forEach(s -> s.add(addSelfLink(this, s)));
 		return ResponseEntity.ok(all);
+	}
+
+	@Override
+	public ResponseEntity<Boolean> remove(Long id) {
+		Optional<Species> species = service.searchById(id);
+		if (!species.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(true);
 	}
 
 }

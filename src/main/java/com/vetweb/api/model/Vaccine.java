@@ -3,12 +3,14 @@ package com.vetweb.api.model;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tbl_vaccine")
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper=false)
 public class Vaccine extends ClinicService {
 	

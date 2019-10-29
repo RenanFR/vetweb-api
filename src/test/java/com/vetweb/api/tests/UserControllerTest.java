@@ -22,6 +22,8 @@ import com.vetweb.api.service.PostmarkMailSender;
 import com.vetweb.api.service.auth.PasswordRecoveryService;
 import com.vetweb.api.service.auth.UserService;
 
+import io.micrometer.core.instrument.MeterRegistry;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = {
 		AccountResource.class
@@ -39,6 +41,9 @@ public class UserControllerTest {
 	
 	@MockBean
 	private PasswordRecoveryService passwordRecoveryService;
+	
+	@MockBean
+	private MeterRegistry registry;
 	
 	@Autowired
 	private WebApplicationContext context;

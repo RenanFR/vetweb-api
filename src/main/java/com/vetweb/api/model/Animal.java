@@ -12,17 +12,28 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.ResourceSupport;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tbl_animal")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @ApiModel(description = "The main entity model of the system, represents a pet of any species")
-public class Animal {
+public class Animal extends ResourceSupport implements ClinicEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,5 +64,16 @@ public class Animal {
 	
 	@Column(name = "image_file")
 	private String imageFile;
+
+	@Override
+	public Link getId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getEntityId() {
+		return id;
+	}
 
 }

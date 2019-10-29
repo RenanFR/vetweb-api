@@ -42,4 +42,10 @@ public class PetOwnerResource implements GenericController<PetOwner> {
 		return ResponseEntity.ok(service.searchById(id));
 	}
 
+	@Override
+	public ResponseEntity<Boolean> remove(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
