@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vetweb.api.model.Animal;
+import com.vetweb.api.model.MedicalRecord;
 import com.vetweb.api.persist.AnimalRepository;
 
 @Service
@@ -15,8 +16,15 @@ public class AnimalService {
 	@Autowired
 	private AnimalRepository repository;
 	
+	@Autowired
+	private MedicalRecordService medicalRecordService;
+	
 	public Animal create(Animal animal) {
-		return repository.save(animal);
+		return medicalRecordService
+			.create(MedicalRecord
+			.builder()
+			.animal(repository.save(animal))
+			.build()).getAnimal();
 	}
 	
 	public List<Animal> list() {
