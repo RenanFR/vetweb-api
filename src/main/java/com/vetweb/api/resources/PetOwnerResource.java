@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +38,7 @@ public class PetOwnerResource implements GenericController<PetOwner> {
 
 	@Override
 	@PostMapping
-	public ResponseEntity<PetOwner> create(PetOwner petOwner) {
+	public ResponseEntity<PetOwner> create(@RequestBody PetOwner petOwner) {
 		Long id = (long)service.create(petOwner);
 		return ResponseEntity.ok(service.searchById(id));
 	}
@@ -45,7 +46,7 @@ public class PetOwnerResource implements GenericController<PetOwner> {
 	@Override
 	public ResponseEntity<Boolean> remove(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		return null;	
 	}
 
 }

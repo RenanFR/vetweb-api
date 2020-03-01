@@ -14,12 +14,16 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tbl_pet_owner")
-@Data
+@NoArgsConstructor
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper=false)
 public class PetOwner extends Person implements ClinicEntity {
 	
@@ -48,7 +52,6 @@ public class PetOwner extends Person implements ClinicEntity {
 		this.setLastName(builder.lastName);
 		this.setAddress(builder.address);
 		this.setGender(builder.gender);
-		this.setNationality(builder.nationality);
 		this.setDateBorn(builder.dateBorn);
 		this.setContactInfo(builder.contactInfo);
 		this.setDateInclusion(builder.dateInclusion);
@@ -67,7 +70,6 @@ public class PetOwner extends Person implements ClinicEntity {
 		private String lastName;
 		private Address address;
 		private char gender;
-		private String nationality;
 		private LocalDate dateBorn;
 		private ContactInfo contactInfo;		
 		private LocalDate dateInclusion;
@@ -98,11 +100,6 @@ public class PetOwner extends Person implements ClinicEntity {
 			this.gender = gender;
 			return this;
 		}	
-		
-		public Builder fromCountry(String country) {
-			this.nationality = country;
-			return this;
-		}
 		
 		public Builder withDateBorn(LocalDate dateBorn) {
 			this.dateBorn = dateBorn;

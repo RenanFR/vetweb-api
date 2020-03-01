@@ -43,12 +43,14 @@ public class PetOwnerRepository {
 	}
 	
 	public Integer create(PetOwner petOwner) {
-		jdbcTemplate.update(INSERT_ADDRESS, new Object[ ] {
-				petOwner.getAddress().getPk().getZipCode(), petOwner.getAddress().getPk().getNumber(), petOwner.getAddress().getStreet(),
-				petOwner.getAddress().getDistrict(), petOwner.getAddress().getCity(), petOwner.getAddress().getState(), petOwner.getAddress().getCountry()
-		});
+		Integer existsAddress = jdbcTemplate.queryForObject("select count(*) from tbl_address where zip_code = '" + petOwner.getAddress().getPk().getZipCode() + "' and num = " + petOwner.getAddress().getPk().getNumber() + ";", Integer.class);
+		if (existsAddress != 1)
+			jdbcTemplate.update(INSERT_ADDRESS, new Object[ ] {
+					petOwner.getAddress().getPk().getZipCode(), petOwner.getAddress().getPk().getNumber(), petOwner.getAddress().getStreet(),
+					petOwner.getAddress().getDistrict(), petOwner.getAddress().getCity(), petOwner.getAddress().getState(), petOwner.getAddress().getCountry()
+			});
 		jdbcTemplate.update(INSERT_OWNER, new Object[ ] {
-			petOwner.getCpf(), LocalDate.now(), petOwner.getFirstName(), petOwner.getLastName(), petOwner.getGender(), petOwner.getNationality(),
+			petOwner.getCpf(), LocalDate.now(), petOwner.getFirstName(), petOwner.getLastName(), petOwner.getGender(), null,
 			petOwner.getDateBorn(), petOwner.getContactInfo().getPhone(), petOwner.getContactInfo().getCellPhone(), petOwner.getContactInfo().getEmail(),
 			petOwner.getAddress().getPk().getZipCode(), petOwner.getAddress().getPk().getNumber() 
 		});

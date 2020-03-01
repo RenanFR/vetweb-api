@@ -53,8 +53,6 @@ public class Person {
 	
 	private char gender;
 	
-	private String nationality;
-	
 	@Column(name = "date_born")
 	private LocalDate dateBorn;
 	

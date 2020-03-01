@@ -10,23 +10,51 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 public class KafkaTests {
 	
 	public static final String SERVER = "0.0.0.0:9092";
 	public static final String TOPIC = "PORN.UPLOAD";
 	
-//	static class PornVideoUploadNotification implements AutoCloseable {
-	static class PornVideoUploadNotification {
+	@NoArgsConstructor
+	@Getter
+	@Setter
+	static class Porn {
 		
-		private final KafkaProducer<String, String> producer = new KafkaProducer<>(properties());
+		private String title;
+		private String content;
+		private Long secondsDuration;
+		
+		public Porn(String title, String content, Long secondsDuration) {
+			this.title = title;
+			this.content = content;
+			this.secondsDuration = secondsDuration;
+		}
+		
+		
+	}
+	
+	static class PornVideoUploadNotification<T> {
+		
+		private final KafkaProducer<String, T> producer = new KafkaProducer<>(properties());
+		
+		T value;
+		
+		public PornVideoUploadNotification(T value) {
+			this.value = value;
+		}
+		
+		public PornVideoUploadNotification() {
+		}
 		
 		
 		public void uploadNewPorn() throws InterruptedException, ExecutionException {
-//			try (producer) {
 				for (int i = 0; i <= 3; i++) {
 					var key = "BLOWJOB " + UUID.randomUUID().toString();
-					var value = "Amazing blonde making blow job";
-					ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC, key, value);
+					ProducerRecord<String, T> record = new ProducerRecord<>(TOPIC, key, value);
 					Callback callback = (recordMetadata, exception) -> {
 						if (exception != null) {
 							exception.printStackTrace();
@@ -36,13 +64,7 @@ public class KafkaTests {
 					};
 					producer.send(record, callback).get();
 				}
-//			}
 		}
-		
-//		@Override
-//		public void close() {
-//			producer.close();
-//		}
 		
 	}
 	
@@ -50,12 +72,13 @@ public class KafkaTests {
 		Properties properties = new Properties();
 		properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, SERVER);
 		properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-		properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+		properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, CustomSerializer.class.getName());
 		return properties;
 	}
 	
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
-		new PornVideoUploadNotification().uploadNewPorn();
+//		new PornVideoUploadNotification<String>("Amazing blonde making blow job").uploadNewPorn();
+		new PornVideoUploadNotification<Porn>(new Porn("Amazing blonde making blow job", "Sex content", 60L)).uploadNewPorn();
 	}
 	
 }

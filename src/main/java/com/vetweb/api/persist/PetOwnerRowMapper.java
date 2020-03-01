@@ -21,7 +21,6 @@ public class PetOwnerRowMapper implements RowMapper<PetOwner> {
 				.havingLastName(rs.getString("last_name"))
 				.withDateBorn(rs.getDate("date_born").toLocalDate())
 				.withGender(rs.getString("gender").charAt(0))
-				.fromCountry(rs.getString("nationality"))
 				.addContact(new ContactInfo(rs.getString("phone"), rs.getString("cell_phone"), rs.getString("email")))
 				.addAddress(new Address(new AddressPrimaryKey(rs.getString("zip_code"), rs.getLong("num")), 
 						rs.getString("street"), rs.getString("district"), rs.getString("city"), rs.getString("state"), rs.getString("country"), null))
