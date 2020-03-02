@@ -16,6 +16,7 @@ public class PetOwnerRowMapper implements RowMapper<PetOwner> {
 	public PetOwner mapRow(ResultSet rs, int rowNum) throws SQLException {
 		return new PetOwner
 				.Builder()
+				.id(rs.getLong("id"))
 				.withCpf(rs.getString("cpf"))
 				.havingFirstName(rs.getString("first_name"))
 				.havingLastName(rs.getString("last_name"))

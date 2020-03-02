@@ -47,6 +47,7 @@ public class PetOwner extends Person implements ClinicEntity {
 	}
 	
 	private PetOwner(Builder builder) {
+		this.setId(builder.id);
 		this.setCpf(builder.cpf);
 		this.setFirstName(builder.firstName);
 		this.setLastName(builder.lastName);
@@ -64,7 +65,8 @@ public class PetOwner extends Person implements ClinicEntity {
 	}
 
 	public static class Builder {
-
+		
+		private Long id;
 		private String cpf;
 		private String firstName;
 		private String lastName;
@@ -75,6 +77,11 @@ public class PetOwner extends Person implements ClinicEntity {
 		private LocalDate dateInclusion;
 		private boolean active;
 		private String profession;
+		
+		public Builder id(Long id) {
+			this.id = id;
+			return this;
+		}
 		
 		public Builder withCpf(String cpf) {
 			this.cpf = cpf;
