@@ -45,6 +45,7 @@ public class TokenService {
 	public static String createToken(String userEmail) {
 		User user = userService.findByEmail(userEmail);
 		Map<String, Object> claims = new HashMap<>();
+		claims.put("id", user.getId());
 		claims.put("userEmail", user.getEmail());
 		claims.put("socialUser", user.isSocialLogin());
 		claims.put("inclusionDate", user.getInclusionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));

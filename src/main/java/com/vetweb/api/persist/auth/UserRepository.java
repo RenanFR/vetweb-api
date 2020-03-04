@@ -1,5 +1,6 @@
 package com.vetweb.api.persist.auth;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	public Optional<User> findByName(String name);
 	
 	public Optional<User> findByEmail(String email);
+	
+	public List<User> findByEmailNot(String email);
 
 }

@@ -115,4 +115,7 @@ public class UserService implements UserDetailsService {
 		return QR_PREFIX + URLEncoder.encode(String.format("otpauth://totp/%s:%s?secret=%s&issuer=%s", APP_NAME, account.getEmail(), account.getTwoFASecret(), APP_NAME), "UTF-8");
 	}
 	
+	public List<User> findContactsFor(String user) {
+		return userRepository.findByEmailNot(user);
+	}
 }

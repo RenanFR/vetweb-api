@@ -3,8 +3,12 @@ package com.vetweb.api.resources;
 import static org.springframework.http.ResponseEntity.ok;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -25,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vetweb.api.config.auth.TokenService;
@@ -33,7 +38,11 @@ import com.vetweb.api.model.auth.AuthInfoDTO;
 import com.vetweb.api.model.auth.NewUserDTO;
 import com.vetweb.api.model.auth.PasswordRecovery;
 import com.vetweb.api.model.auth.User;
+import com.vetweb.api.model.mongo.Message;
+import com.vetweb.api.pojo.Contact;
 import com.vetweb.api.pojo.SimpleMessageResponse;
+import com.vetweb.api.pojo.UserToken;
+import com.vetweb.api.service.MessageService;
 import com.vetweb.api.service.PostmarkMailSender;
 import com.vetweb.api.service.auth.PasswordRecoveryService;
 import com.vetweb.api.service.auth.UserService;
@@ -69,6 +78,9 @@ public class AccountResource {
 	private MeterRegistry registry;
 	
 	private Counter nonexistentCounter;
+	
+	@Autowired
+	private MessageService messageService;
 	
 	@Value("${id.client.oauth}")
 	private String idClientOauth;
@@ -196,6 +208,40 @@ public class AccountResource {
 		userInformationMap.put("username", user);
 		userInformationMap.put("token", appToken);
 		return userInformationMap;
+	}
+	
+	@GetMapping("contacts")
+	public ResponseEntity<List<Contact>> myContacts(@RequestParam("currentUser") String currentUser) {
+		final User mostRecentContact;
+		List<User> contacts = userService.findContactsFor(currentUser);
+		List<Contact> contactList = contacts.
+			stream()
+			.map((User contact) -> {
+				UserToken userToken = UserToken
+						.builder()
+						.id(contact.getId())
+						.userEmail(contact.getEmail())
+						.inclusionDate(contact.getInclusionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+						.socialUser(contact.isSocialLogin())
+						.profiles(contact.getAuthorities().stream().map(profile -> profile.getAuthority()).collect(Collectors.toList()))
+						.build();
+				List<Message> messages = messageService.messagesFromUser(userToken.getUserEmail());
+				messages.sort((Message one, Message other) -> one.getSentAt().compareTo(other.getSentAt()));
+				return Contact.builder().user(userToken).messages(messages).build();
+			})
+			.collect(Collectors.toList());
+		List<Message> allMessages = new ArrayList<>();
+		contactList.forEach((Contact contact) -> {
+			allMessages.addAll(contact.getMessages());
+		});
+		allMessages.sort((Message one, Message other) -> one.getSentAt().compareTo(other.getSentAt()));		
+		mostRecentContact = !allMessages.isEmpty()? contacts.stream().filter(u -> u.getEmail().equals(allMessages.get(0).getReceiver())).findFirst().get() : contacts.get(0);
+		contactList.forEach((Contact contact) -> {
+			if (contact.getUser().getUserEmail().equals(mostRecentContact.getEmail())) {
+				contact.setMostRecentContact(true);
+			}
+		});
+		return ResponseEntity.ok(contactList);
 	}
 	
 }

@@ -179,10 +179,10 @@
 		</dependency>               
 		
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-websocket -->
-<!-- 		<dependency> -->
-<!-- 		    <groupId>org.springframework.boot</groupId> -->
-<!-- 		    <artifactId>spring-boot-starter-websocket</artifactId> -->
-<!-- 		</dependency> -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-reactor-netty -->
 		<dependency>
@@ -196,10 +196,23 @@
 		    <artifactId>kafka-clients</artifactId>
 		</dependency>
 		
-<!-- 		<dependency> -->
-<!-- 		    <groupId>org.springframework.kafka</groupId> -->
-<!-- 		    <artifactId>spring-kafka</artifactId> -->
-<!-- 		</dependency> -->
+		<dependency>
+		    <groupId>org.springframework.kafka</groupId>
+		    <artifactId>spring-kafka</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework.data</groupId>
+		    <artifactId>spring-data-mongodb</artifactId>
+		</dependency>	
+		
+		<dependency>
+		    <groupId>org.springframework.data</groupId>
+		    <artifactId>spring-data-releasetrain</artifactId>
+		    <version>Lovelace-SR9</version>
+		    <type>pom</type>
+		    <scope>import</scope>
+		</dependency>			
 		
 	</dependencies>
 
