@@ -1,13 +1,14 @@
 package com.vetweb.api.resources;
 
+import static com.vetweb.api.pojo.DTOConverter.userToDataTransferObject;
 import static org.springframework.http.ResponseEntity.ok;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,10 +38,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vetweb.api.config.auth.TokenService;
 import com.vetweb.api.exception.EmailException;
 import com.vetweb.api.model.auth.AuthInfoDTO;
+import com.vetweb.api.model.auth.ExpiringConfirmationCode;
 import com.vetweb.api.model.auth.NewUserDTO;
 import com.vetweb.api.model.auth.PasswordRecovery;
 import com.vetweb.api.model.auth.User;
 import com.vetweb.api.model.mongo.Message;
+import com.vetweb.api.persist.auth.ExpiringConfirmationCodeRepository;
 import com.vetweb.api.pojo.Contact;
 import com.vetweb.api.pojo.SimpleMessageResponse;
 import com.vetweb.api.pojo.UserToken;
@@ -53,6 +58,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import net.bytebuddy.utility.RandomString;
 
 /**
  * @author Renan Rodrigues
@@ -82,6 +88,12 @@ public class AccountResource {
 	@Autowired
 	private MessageService messageService;
 	
+	@Autowired
+	private JavaMailSender mailSender;
+	
+	@Autowired
+	private ExpiringConfirmationCodeRepository codeRepository;
+	
 	@Value("${id.client.oauth}")
 	private String idClientOauth;
 	
@@ -102,11 +114,20 @@ public class AccountResource {
 	@PostMapping("signup")
 	public ResponseEntity<String> createAccount(@RequestBody NewUserDTO account) {
 		LOGGER.info("Creating user " + account);
-		if ((account.getUserName() == null || account.getUserName().isEmpty()) || (account.getUserMail() == null || account.getUserMail().isEmpty()) || (account.getPassword() == null || account.getPassword().isEmpty())) {
+		if ((account.getUserName() == null || account.getUserName().isEmpty()) || (account.getUserMail() == null || account.getUserMail().isEmpty())) {
 			return ResponseEntity.badRequest().body("Missing required information");
 		}
-		User user = new User(account.getUserName(), account.getUserMail(), account.getPassword(), account.isUseTwoFactorAuth(), account.isSocialLogin());
+		String firstAccessPassword = RandomString.make(6);
+		User user = new User(account.getUserName(), account.getUserMail(), firstAccessPassword, account.isUseTwoFactorAuth(), account.isSocialLogin());
 		String qrCodeOrMessage = userService.signUp(user);
+		SimpleMailMessage email = new SimpleMailMessage();
+		email.setTo(account.getUserMail());
+		email.setSubject("VetWeb invitation"); 
+		String invitationText = "Congratulations, you were invited to use VetWeb, use temporary password " + firstAccessPassword + ", " 
+				+ (user.isUsing2FA()? "please scan the following QR Code with your phone and join us for the first time " : " please use the following code to complete your registration before it expires ");
+		invitationText = invitationText.concat(qrCodeOrMessage);
+		email.setText(invitationText);
+		this.mailSender.send(email);
 		return ResponseEntity.ok(qrCodeOrMessage);
 	}
 	
@@ -217,14 +238,7 @@ public class AccountResource {
 		List<Contact> contactList = contacts.
 			stream()
 			.map((User contact) -> {
-				UserToken userToken = UserToken
-						.builder()
-						.id(contact.getId())
-						.userEmail(contact.getEmail())
-						.inclusionDate(contact.getInclusionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-						.socialUser(contact.isSocialLogin())
-						.profiles(contact.getAuthorities().stream().map(profile -> profile.getAuthority()).collect(Collectors.toList()))
-						.build();
+				UserToken userToken = userToDataTransferObject(contact);
 				List<Message> messages = messageService.messagesFromUser(userToken.getUserEmail());
 				messages.sort((Message one, Message other) -> one.getSentAt().compareTo(other.getSentAt()));
 				return Contact.builder().user(userToken).messages(messages).build();
@@ -232,16 +246,58 @@ public class AccountResource {
 			.collect(Collectors.toList());
 		List<Message> allMessages = new ArrayList<>();
 		contactList.forEach((Contact contact) -> {
-			allMessages.addAll(contact.getMessages());
+			allMessages.addAll(contact.getMessages().stream().filter(msg -> msg.getReceiver().equals(currentUser)).collect(Collectors.toList()));
 		});
 		allMessages.sort((Message one, Message other) -> one.getSentAt().compareTo(other.getSentAt()));		
-		mostRecentContact = !allMessages.isEmpty()? contacts.stream().filter(u -> u.getEmail().equals(allMessages.get(0).getReceiver())).findFirst().get() : contacts.get(0);
+		mostRecentContact = !allMessages.isEmpty()? contacts.stream().filter(u -> u.getEmail().equals(allMessages.get(0).getSender())).findFirst().get() : contacts.get(0);
 		contactList.forEach((Contact contact) -> {
 			if (contact.getUser().getUserEmail().equals(mostRecentContact.getEmail())) {
 				contact.setMostRecentContact(true);
 			}
 		});
 		return ResponseEntity.ok(contactList);
+	}
+	
+	@GetMapping("{userId}")
+	public ResponseEntity<User> checkUserToConfirm(@PathVariable("userId") Long userId) {
+		return ResponseEntity.ok(this.userService.findById(userId));
+	}
+	
+	@PutMapping("confirm")
+	public ResponseEntity<Boolean> confirmAccount(@RequestBody NewUserDTO account) {
+		User user = userService.findByEmail(account.getUserMail());
+		ExpiringConfirmationCode code = codeRepository.findByCode(account.getConfirmationCode());
+		if (code.isValid()) {
+			user.setPassword(account.getPassword());
+			user.setTemporaryPassword("NOT_SET");
+			user.setEnabled(true);
+			codeRepository.delete(code);
+			this.userService.saveUser(user);
+			
+		}
+		return ResponseEntity.ok(true);
+	}
+	
+	@PostMapping("check-code")
+	public ResponseEntity<Boolean> checkConfirmationCode(@RequestParam("userId") Long user, @RequestBody String confirmationCode) {
+		Optional<ExpiringConfirmationCode> code = codeRepository.findByUserId(user);
+		boolean result = false;
+		if (code.isPresent()) {
+			ExpiringConfirmationCode c = code.get();
+			if (c.isValid()) {
+				result = c.getCode().equals(confirmationCode);
+			}
+		}
+		return ResponseEntity.ok(result);
+	}
+	@PostMapping("check-temp")
+	public ResponseEntity<Boolean> checkTempPassword(@RequestParam("userId") Long userId, @RequestBody String tempPassword) {
+		User user = userService.findById(userId);
+		boolean result = false;
+		if (user.getTemporaryPassword().equals(tempPassword)) {
+			result = true;
+		}
+		return ResponseEntity.ok(result);
 	}
 	
 }

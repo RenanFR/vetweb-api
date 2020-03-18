@@ -51,5 +51,7 @@
     <include file="changelog/06-default-profiles.xml" relativeToChangelogFile="true"/>
     <include file="changelog/07-person-id.xml" relativeToChangelogFile="true"/>
     <include file="changelog/08-message-receiver.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/09-user-confirmation-code-expiration.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/10-additional-user-fields.xml" relativeToChangelogFile="true"/>
     
 </databaseChangeLog>

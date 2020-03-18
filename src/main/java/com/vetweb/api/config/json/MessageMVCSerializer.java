@@ -13,6 +13,7 @@ public class MessageMVCSerializer extends JsonSerializer<Message> {
 	@Override
 	public void serialize(Message message, JsonGenerator generator, SerializerProvider serializers) throws IOException {
 		generator.writeStartObject();
+		generator.writeStringField("_id", message.get_id());
 		generator.writeStringField("text", message.getContent());
 		generator.writeStringField("sentAt", message.getSentAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		generator.writeStringField("sender", message.getSender());
@@ -21,5 +22,5 @@ public class MessageMVCSerializer extends JsonSerializer<Message> {
 		generator.writeNumberField("idReceiver", message.getIdReceiver());
 		generator.writeEndObject();
 	}
-
+	
 }

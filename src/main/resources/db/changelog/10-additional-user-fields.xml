@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="10" author="renan.rodrigues">
+
+	    <addColumn catalogName="pg_catalog"
+	            schemaName="public"
+	            tableName="tbl_user">
+	        <column name="enabled" type="boolean"/>
+	        <column name="temp_password" type="VARCHAR(255)"/>
+	    </addColumn>
+	    
+    <addDefaultValue catalogName="pg_catalog"
+            columnDataType="boolean"
+            columnName="enabled"
+            defaultValueBoolean="true"
+            schemaName="public"
+            tableName="tbl_user"/>
+            	    
+    <addDefaultValue catalogName="pg_catalog"
+            columnDataType="VARCHAR(255)"
+            columnName="temp_password"
+            defaultValue="NOT_SET"
+            schemaName="public"
+            tableName="tbl_user"/>	    
+	            
+	</changeSet>
+	
+</databaseChangeLog>

@@ -48,6 +48,8 @@ public class TokenService {
 		claims.put("id", user.getId());
 		claims.put("userEmail", user.getEmail());
 		claims.put("socialUser", user.isSocialLogin());
+		claims.put("enabled", user.isEnabled());
+		claims.put("usingTempPassword", !user.getTemporaryPassword().equals("NOT_SET"));
 		claims.put("inclusionDate", user.getInclusionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		String profiles = user.getAuthorities().stream().map(r -> r.getAuthority()).collect(Collectors.joining(","));
 		claims.put("profiles", profiles);

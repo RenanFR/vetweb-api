@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="09" author="renan.rodrigues">
+
+        <createTable tableName="tbl_exp_conf_code">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="tbl_exp_conf_code_pkey"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>            
+            <column name="code" type="VARCHAR(255)"/>
+            <column name="issue_date" type="timestamp"/>
+            <column name="expiration_date" type="timestamp"/>
+        </createTable>
+
+		<addForeignKeyConstraint baseColumnNames="user_id" baseTableName="tbl_exp_conf_code" constraintName="tbl_user_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tbl_user"/>
+	    
+	</changeSet>
+	
+</databaseChangeLog>

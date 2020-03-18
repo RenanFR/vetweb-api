@@ -3,6 +3,7 @@ package com.vetweb.api.service.auth;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,8 +18,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.vetweb.api.model.auth.ExpiringConfirmationCode;
 import com.vetweb.api.model.auth.Profile;
 import com.vetweb.api.model.auth.User;
+import com.vetweb.api.persist.auth.ExpiringConfirmationCodeRepository;
 import com.vetweb.api.persist.auth.ProfileRepository;
 import com.vetweb.api.persist.auth.UserRepository;
 
@@ -34,6 +37,9 @@ public class UserService implements UserDetailsService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private ExpiringConfirmationCodeRepository codeRepository;
 	
 	private static final String QR_PREFIX = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
 	
@@ -69,13 +75,21 @@ public class UserService implements UserDetailsService {
 	
 	public String signUp(User user) {
 		user.setProfiles(Arrays.asList(profileRepository.findById("PET_OWNER").get()));
+		ExpiringConfirmationCode code = new ExpiringConfirmationCode();
+		user.setInclusionDate(LocalDate.now());
+		user.setEnabled(true);
+		this.saveUser(user);
 		if (user.isUsing2FA()) {
 			user.setTwoFASecret(Base32.random());
+		} else {
+			code.setCode(Base32.random());
+			code.setIssuedAt(LocalDateTime.now());
+			code.setExpiration(LocalDateTime.now().plusDays(1));
+			code.setUser(user);
+			codeRepository.save(code);
 		}
-		user.setInclusionDate(LocalDate.now());
-		this.saveUser(user);
 		try {
-			return user.isUsing2FA() ? this.generateQRCode(user) : "User created successfully";
+			return user.isUsing2FA() ? this.generateQRCode(user) : code.getCode();
 		} catch (UnsupportedEncodingException exception) {
 			return "Error generating QR code for user, ask for support";
 		}
@@ -117,5 +131,9 @@ public class UserService implements UserDetailsService {
 	
 	public List<User> findContactsFor(String user) {
 		return userRepository.findByEmailNot(user);
+	}
+	
+	public User findById(Long id) {
+		return userRepository.findById(id).get();
 	}
 }

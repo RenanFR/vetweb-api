@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +25,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 //Model for user information
 @Entity
@@ -56,6 +59,20 @@ public class User implements UserDetails {
 	@Column(name = "inclusion_date")
 	private LocalDate inclusionDate;
 	
+	@Getter
+	@Setter
+	private Boolean enabled;
+	
+	@Getter
+	@Setter
+	@Column(name = "temp_password")
+	private String temporaryPassword;
+	
+	@Getter
+	@Setter
+	@OneToOne(mappedBy = "user")
+	private ExpiringConfirmationCode confirmationCode;
+	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JsonManagedReference
 	@JoinTable(name = "tbl_user_profile",
@@ -77,6 +94,7 @@ public class User implements UserDetails {
 	public User(String name, String email, String password, Boolean using2fa, boolean socialLogin) {
 		this.name = name;
 		this.email = email;
+		this.temporaryPassword = password;
 		this.password = password;
 		using2FA = using2fa;
 		this.socialLogin = socialLogin;
@@ -156,7 +174,7 @@ public class User implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return enabled;
 	}
 
 	public boolean isSocialLogin() {
