@@ -14,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -51,6 +51,7 @@ public class User implements UserDetails {
 	@Column(name = "using_2fa")
 	private Boolean using2FA;
 	
+	@Column(name = "two_fa_secret")
 	private String twoFASecret;
 	
 	@Column(name = "is_social_login")
@@ -70,8 +71,15 @@ public class User implements UserDetails {
 	
 	@Getter
 	@Setter
-	@OneToOne(mappedBy = "user")
-	private ExpiringConfirmationCode confirmationCode;
+	@JsonManagedReference
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	private List<ExpiringConfirmationCode> codesOfConfirmation;
+	
+	@Getter
+	@Setter
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	@JsonManagedReference
+	private List<PasswordRecovery> recoveryRequests;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JsonManagedReference
@@ -207,6 +215,18 @@ public class User implements UserDetails {
 
 	public void setInclusionDate(LocalDate inclusionDate) {
 		this.inclusionDate = inclusionDate;
+	}
+	
+	public boolean hasValidCode() {
+		if (this.codesOfConfirmation.isEmpty()) {
+			return false;
+		} else {
+			return this.codesOfConfirmation.stream().anyMatch(c -> c.isValid());
+		}
+	}
+	
+	public boolean hasConfirmationCode() {
+		return !this.codesOfConfirmation.isEmpty();
 	}
 
 }

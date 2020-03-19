@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,6 +35,7 @@ public class ExpiringConfirmationCode {
 	private LocalDateTime expiration;
 	
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 	

@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Data;
 
 @Entity
@@ -23,6 +25,7 @@ public class PasswordRecovery {
 	private Long id;
 	
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 	

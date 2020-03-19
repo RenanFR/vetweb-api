@@ -24,7 +24,7 @@
             <column name="name" type="VARCHAR(255)" value="Renan Rodrigues"/>
             <column name="password" type="VARCHAR(255)" value="$2a$10$KTM3Dk2aSCLh0kBKPkYjx.HpwZwphh/pfXmB5hCOVoFPxt9UYVCw6"/>
             <column name="using_2fa" type="BOOL" valueBoolean="false"/>
-            <column name="twofasecret" type="VARCHAR(255)" value=""/>
+            <column name="enabled" type="BOOL" valueBoolean="true"/>
             
 	    </insert>
 	    

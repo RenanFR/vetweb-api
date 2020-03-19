@@ -18,7 +18,7 @@
             <column name="name" type="VARCHAR(255)" value="Maria Jéssica"/>
             <column name="password" type="VARCHAR(255)" value="$2a$10$66m3tg2ZkJnR.jKXuPOb0esmLDDiANZXF47eMaRheckjro4Qhe8na"/>
             <column name="using_2fa" type="BOOL" valueBoolean="false"/>
-            <column name="twofasecret" type="VARCHAR(255)" value=""/>
+            <column name="enabled" type="BOOL" valueBoolean="true"/>
             
 	    </insert>
 	    
@@ -32,7 +32,7 @@
             <column name="name" type="VARCHAR(255)" value="Teste Spring boot"/>
             <column name="password" type="VARCHAR(255)" value="$2a$10$8FBjtxrEXEGgRZKJ/9ub5eOQPBnPa8x9Ux4S153QAIIlzol84G1k2"/>
             <column name="using_2fa" type="BOOL" valueBoolean="false"/>
-            <column name="twofasecret" type="VARCHAR(255)" value=""/>
+            <column name="enabled" type="BOOL" valueBoolean="true"/>
             
 	    </insert>
 	    

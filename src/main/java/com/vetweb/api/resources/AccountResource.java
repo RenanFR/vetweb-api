@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,7 +46,6 @@ import com.vetweb.api.pojo.Contact;
 import com.vetweb.api.pojo.SimpleMessageResponse;
 import com.vetweb.api.pojo.UserToken;
 import com.vetweb.api.service.MessageService;
-import com.vetweb.api.service.PostmarkMailSender;
 import com.vetweb.api.service.auth.PasswordRecoveryService;
 import com.vetweb.api.service.auth.UserService;
 
@@ -75,9 +72,6 @@ public class AccountResource {
 	private UserService userService;
 	
 	@Autowired
-	private PostmarkMailSender postmarkMailSender;
-	
-	@Autowired
 	private PasswordRecoveryService recoveryService;
 	
 	@Autowired
@@ -87,9 +81,6 @@ public class AccountResource {
 	
 	@Autowired
 	private MessageService messageService;
-	
-	@Autowired
-	private JavaMailSender mailSender;
 	
 	@Autowired
 	private ExpiringConfirmationCodeRepository codeRepository;
@@ -120,14 +111,6 @@ public class AccountResource {
 		String firstAccessPassword = RandomString.make(6);
 		User user = new User(account.getUserName(), account.getUserMail(), firstAccessPassword, account.isUseTwoFactorAuth(), account.isSocialLogin());
 		String qrCodeOrMessage = userService.signUp(user);
-		SimpleMailMessage email = new SimpleMailMessage();
-		email.setTo(account.getUserMail());
-		email.setSubject("VetWeb invitation"); 
-		String invitationText = "Congratulations, you were invited to use VetWeb, use temporary password " + firstAccessPassword + ", " 
-				+ (user.isUsing2FA()? "please scan the following QR Code with your phone and join us for the first time " : " please use the following code to complete your registration before it expires ");
-		invitationText = invitationText.concat(qrCodeOrMessage);
-		email.setText(invitationText);
-		this.mailSender.send(email);
 		return ResponseEntity.ok(qrCodeOrMessage);
 	}
 	
@@ -207,7 +190,7 @@ public class AccountResource {
 	public ResponseEntity<SimpleMessageResponse> sendForgetPasswordEmail(@RequestBody String userEmail) {
 		User user = userService.findByEmail(userEmail);
 		try {
-			postmarkMailSender.sendForgotPasswordEmail(user);
+			userService.forgotPassword(user);
 		} catch (RuntimeException exception) {
 			throw new EmailException(exception.getMessage());
 		}
@@ -299,5 +282,6 @@ public class AccountResource {
 		}
 		return ResponseEntity.ok(result);
 	}
+//	Guards quick organization
 	
 }

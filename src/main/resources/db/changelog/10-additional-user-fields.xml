@@ -11,23 +11,21 @@
 	    <addColumn catalogName="pg_catalog"
 	            schemaName="public"
 	            tableName="tbl_user">
-	        <column name="enabled" type="boolean"/>
 	        <column name="temp_password" type="VARCHAR(255)"/>
 	    </addColumn>
-	    
-    <addDefaultValue catalogName="pg_catalog"
-            columnDataType="boolean"
-            columnName="enabled"
-            defaultValueBoolean="true"
-            schemaName="public"
-            tableName="tbl_user"/>
             	    
-    <addDefaultValue catalogName="pg_catalog"
-            columnDataType="VARCHAR(255)"
-            columnName="temp_password"
-            defaultValue="NOT_SET"
-            schemaName="public"
-            tableName="tbl_user"/>	    
+	    <addDefaultValue catalogName="pg_catalog"
+	            columnDataType="VARCHAR(255)"
+	            columnName="temp_password"
+	            defaultValue="NOT_SET"
+	            schemaName="public"
+	            tableName="tbl_user"/>	
+	            
+	    <update catalogName="pg_catalog"
+	            schemaName="public"
+	            tableName="tbl_user">
+	        <column name="temp_password" type="VARCHAR(255)" value="NOT_SET"/>
+	    </update>	            
 	            
 	</changeSet>
 	
