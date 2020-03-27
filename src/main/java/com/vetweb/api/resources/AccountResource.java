@@ -282,6 +282,5 @@ public class AccountResource {
 		}
 		return ResponseEntity.ok(result);
 	}
-//	Guards quick organization
 	
 }
