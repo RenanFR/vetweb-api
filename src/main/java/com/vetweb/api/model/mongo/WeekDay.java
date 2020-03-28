@@ -1,5 +1,6 @@
 package com.vetweb.api.model.mongo;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
@@ -22,5 +23,7 @@ public class WeekDay {
 	private LocalTime startTime;
 	
 	private LocalTime endTime;
+	
+	private DayOfWeek dayOfWeek;
 	
 }

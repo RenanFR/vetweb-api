@@ -7,5 +7,7 @@ import com.vetweb.api.model.mongo.ChatConfiguration;
 public interface ChatConfigurationRepository extends MongoRepository<ChatConfiguration, String> {
 	
 	ChatConfiguration findByUserUserEmail(String userEmail);
+	
+	ChatConfiguration findByUserId(Long id);
 
 }

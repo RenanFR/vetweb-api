@@ -1,7 +1,9 @@
 package com.vetweb.api.resources;
 
+import static com.vetweb.api.config.KafkaMessageListener.checkReceiverAvailability;
 import static com.vetweb.api.pojo.DTOConverter.userToDataTransferObject;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -40,8 +42,12 @@ public class ChatResource {
 	
 	@PostMapping
 	public ResponseEntity<Message> send(@RequestBody Message msg) {
-		Message sent = service.send(msg);
-		return ResponseEntity.ok(sent);
+		ChatConfiguration senderConfiguration = configurationRepository.findByUserId(msg.getIdSender());
+		if (checkSelfAvailability(senderConfiguration)) {
+			Message sent = service.send(msg);
+			return ResponseEntity.ok(sent);
+		}
+		return ResponseEntity.badRequest().build();
 	}
 	
 	@GetMapping("{user}")
@@ -78,13 +84,13 @@ public class ChatResource {
 									.builder()
 									.enabled(false)
 									.text("Estou fora do horário de atendimento")
-									.sunday(defaultWeekDay("Domingo"))
-									.monday(defaultWeekDay("Segunda"))
-									.tuesday(defaultWeekDay("Terça"))
-									.wednesday(defaultWeekDay("Quarta"))
-									.thursday(defaultWeekDay("Quinta"))
-									.friday(defaultWeekDay("Sexta"))
-									.saturday(defaultWeekDay("Sábado"))
+									.sunday(defaultWeekDay("Domingo", DayOfWeek.SUNDAY))
+									.monday(defaultWeekDay("Segunda", DayOfWeek.MONDAY))
+									.tuesday(defaultWeekDay("Terça", DayOfWeek.TUESDAY))
+									.wednesday(defaultWeekDay("Quarta", DayOfWeek.WEDNESDAY))
+									.thursday(defaultWeekDay("Quinta", DayOfWeek.THURSDAY))
+									.friday(defaultWeekDay("Sexta", DayOfWeek.FRIDAY))
+									.saturday(defaultWeekDay("Sábado", DayOfWeek.SATURDAY))
 									.build())
 							.build())
 					.build());
@@ -92,8 +98,12 @@ public class ChatResource {
 		return ResponseEntity.ok(chatConfiguration);
 	}
 	
-	private WeekDay defaultWeekDay(String name) {
-		return WeekDay.builder().name(name).enabled(false).startTime(LocalTime.of(0, 0)).endTime(LocalTime.of(23, 59)).build();
+	private WeekDay defaultWeekDay(String name, DayOfWeek dayOfWeek) {
+		return WeekDay.builder().name(name).dayOfWeek(dayOfWeek).enabled(false).startTime(LocalTime.of(0, 0)).endTime(LocalTime.of(23, 59)).build();
+	}
+	
+	private boolean checkSelfAvailability(ChatConfiguration senderConfiguration) {
+		return checkReceiverAvailability(senderConfiguration) == null;
 	}
 	
 }
